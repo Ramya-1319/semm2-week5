@@ -1,0 +1,477 @@
+use fsdb2
+switched to db fsdb2
+db.createCollection("Employees");
+db.createCollection("Orders");
+{ ok: 1 }
+// Insert a new employee
+db.Employees.insertOne({
+    EmployeeID: 1,
+    FirstName: 'Alice',
+    LastName: 'Johnson',
+    DateOfBirth: new Date('1990-01-15'),
+    Department: 'HR'
+});
+
+// Insert multiple orders
+db.Orders.insertMany([
+    { OrderID: 1, OrderDate: new Date('2023-01-15'), CustomerID: 101, Amount: 150.00 },
+    { OrderID: 2, OrderDate: new Date('2023-02-10'), CustomerID: 102, Amount: 250.00 },
+    { OrderID: 3, OrderDate: new Date('2023-03-05'), CustomerID: 101, Amount: 80.00 },
+    { OrderID: 4, OrderDate: new Date('2023-03-12'), CustomerID: 103, Amount: 500.00 }
+]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6728fe19a10e4fafe03177a8'),
+    '1': ObjectId('6728fe19a10e4fafe03177a9'),
+    '2': ObjectId('6728fe19a10e4fafe03177aa'),
+    '3': ObjectId('6728fe19a10e4fafe03177ab')
+  }
+}
+// Select all documents from Employees
+db.Employees.find().pretty();
+
+// Select all documents from Orders
+db.Orders.find().pretty();
+
+// Select only FirstName and LastName from Employees
+db.Employees.find({}, { FirstName: 1, LastName: 1, _id: 0 });
+
+// Select OrderID and Amount from Orders
+db.Orders.find({}, { OrderID: 1, Amount: 1, _id: 0 });
+{
+  OrderID: 201,
+  Amount: 1350.75
+}
+{
+  OrderID: 205,
+  Amount: 1265
+}
+{
+  OrderID: 203,
+  Amount: 300.5
+}
+{
+  OrderID: 208,
+  Amount: 450.25
+}
+{
+  OrderID: 1,
+  Amount: 150
+}
+{
+  OrderID: 2,
+  Amount: 250
+}
+{
+  OrderID: 3,
+  Amount: 80
+}
+{
+  OrderID: 4,
+  Amount: 500
+}
+// Update the Department of the employee with EmployeeID 1
+db.Employees.updateOne(
+    { EmployeeID: 1 },
+    { $set: { Department: 'Finance' } }
+);
+
+// Update the Amount in the Orders collection where OrderID is 2
+db.Orders.updateOne(
+    { OrderID: 2 },
+    { $set: { Amount: 500.00 } }
+);
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// Delete the employee with EmployeeID 1
+db.Employees.deleteOne({ EmployeeID: 1 });
+
+// Delete all orders where Amount is less than 100
+db.Orders.deleteMany({ Amount: { $lt: 100 } });
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+// Select all employees in 'HR' department
+db.Employees.find({ Department: 'HR' }).pretty();
+
+// Select all orders with Amount greater than 300
+db.Orders.find({ Amount: { $gt: 300 } }).pretty();
+{
+  _id: ObjectId('6728fa1612bd9148457cbf31'),
+  OrderID: 201,
+  OrderDate: 2024-08-24T00:00:00.000Z,
+  CustomerID: 'C001',
+  Amount: 1350.75
+}
+{
+  _id: ObjectId('6728fa1612bd9148457cbf32'),
+  OrderID: 205,
+  OrderDate: 2024-08-23T00:00:00.000Z,
+  CustomerID: 'C002',
+  Amount: 1265
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf34'),
+  OrderID: 203,
+  OrderDate: 2024-02-01T00:00:00.000Z,
+  CustomerID: 'C003',
+  Amount: 300.5
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf35'),
+  OrderID: 208,
+  OrderDate: 2024-02-05T00:00:00.000Z,
+  CustomerID: 'C004',
+  Amount: 450.25
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a9'),
+  OrderID: 2,
+  OrderDate: 2023-02-10T00:00:00.000Z,
+  CustomerID: 102,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177ab'),
+  OrderID: 4,
+  OrderDate: 2023-03-12T00:00:00.000Z,
+  CustomerID: 103,
+  Amount: 500
+}
+// Select employees in 'HR' and born after '1990-01-01'
+db.Employees.find({ Department: 'HR', DateOfBirth: { $gt: new Date('1990-01-01') } });
+
+// Select orders with Amount > 300 and OrderDate before '2023-01-01'
+db.Orders.find({ Amount: { $gt: 300 }, OrderDate: { $lt: new Date('2023-01-01') } });
+
+// Select employees in 'HR' or 'Finance' department
+db.Employees.find({ Department: { $in: ['HR', 'Finance'] } });
+
+// Select orders with Amount < 100 or OrderDate after '2023-01-01'
+db.Orders.find({ $or: [{ Amount: { $lt: 100 } }, { OrderDate: { $gt: new Date('2023-01-01') } }] });
+{
+  _id: ObjectId('6728fa1612bd9148457cbf31'),
+  OrderID: 201,
+  OrderDate: 2024-08-24T00:00:00.000Z,
+  CustomerID: 'C001',
+  Amount: 1350.75
+}
+{
+  _id: ObjectId('6728fa1612bd9148457cbf32'),
+  OrderID: 205,
+  OrderDate: 2024-08-23T00:00:00.000Z,
+  CustomerID: 'C002',
+  Amount: 1265
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf34'),
+  OrderID: 203,
+  OrderDate: 2024-02-01T00:00:00.000Z,
+  CustomerID: 'C003',
+  Amount: 300.5
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf35'),
+  OrderID: 208,
+  OrderDate: 2024-02-05T00:00:00.000Z,
+  CustomerID: 'C004',
+  Amount: 450.25
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a8'),
+  OrderID: 1,
+  OrderDate: 2023-01-15T00:00:00.000Z,
+  CustomerID: 101,
+  Amount: 150
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a9'),
+  OrderID: 2,
+  OrderDate: 2023-02-10T00:00:00.000Z,
+  CustomerID: 102,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177ab'),
+  OrderID: 4,
+  OrderDate: 2023-03-12T00:00:00.000Z,
+  CustomerID: 103,
+  Amount: 500
+}
+// Select all employees ordered by LastName ascending
+db.Employees.find().sort({ LastName: 1 }).pretty();
+
+// Select all orders ordered by Amount descending
+db.Orders.find().sort({ Amount: -1 }).pretty();
+{
+  _id: ObjectId('6728fa1612bd9148457cbf31'),
+  OrderID: 201,
+  OrderDate: 2024-08-24T00:00:00.000Z,
+  CustomerID: 'C001',
+  Amount: 1350.75
+}
+{
+  _id: ObjectId('6728fa1612bd9148457cbf32'),
+  OrderID: 205,
+  OrderDate: 2024-08-23T00:00:00.000Z,
+  CustomerID: 'C002',
+  Amount: 1265
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a9'),
+  OrderID: 2,
+  OrderDate: 2023-02-10T00:00:00.000Z,
+  CustomerID: 102,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177ab'),
+  OrderID: 4,
+  OrderDate: 2023-03-12T00:00:00.000Z,
+  CustomerID: 103,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf35'),
+  OrderID: 208,
+  OrderDate: 2024-02-05T00:00:00.000Z,
+  CustomerID: 'C004',
+  Amount: 450.25
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf34'),
+  OrderID: 203,
+  OrderDate: 2024-02-01T00:00:00.000Z,
+  CustomerID: 'C003',
+  Amount: 300.5
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a8'),
+  OrderID: 1,
+  OrderDate: 2023-01-15T00:00:00.000Z,
+  CustomerID: 101,
+  Amount: 150
+}
+// Select all employees ordered by LastName ascending
+db.Employees.find().sort({ LastName: 1 }).pretty();
+
+// Select all orders ordered by Amount descending
+db.Orders.find().sort({ Amount: -1 }).pretty();
+{
+  _id: ObjectId('6728fa1612bd9148457cbf31'),
+  OrderID: 201,
+  OrderDate: 2024-08-24T00:00:00.000Z,
+  CustomerID: 'C001',
+  Amount: 1350.75
+}
+{
+  _id: ObjectId('6728fa1612bd9148457cbf32'),
+  OrderID: 205,
+  OrderDate: 2024-08-23T00:00:00.000Z,
+  CustomerID: 'C002',
+  Amount: 1265
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a9'),
+  OrderID: 2,
+  OrderDate: 2023-02-10T00:00:00.000Z,
+  CustomerID: 102,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177ab'),
+  OrderID: 4,
+  OrderDate: 2023-03-12T00:00:00.000Z,
+  CustomerID: 103,
+  Amount: 500
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf35'),
+  OrderID: 208,
+  OrderDate: 2024-02-05T00:00:00.000Z,
+  CustomerID: 'C004',
+  Amount: 450.25
+}
+{
+  _id: ObjectId('6728fa4c12bd9148457cbf34'),
+  OrderID: 203,
+  OrderDate: 2024-02-01T00:00:00.000Z,
+  CustomerID: 'C003',
+  Amount: 300.5
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a8'),
+  OrderID: 1,
+  OrderDate: 2023-01-15T00:00:00.000Z,
+  CustomerID: 101,
+  Amount: 150
+}
+// Count the number of employees
+db.Employees.countDocuments();
+
+// Count the number of orders
+db.Orders.countDocuments();
+
+// Find the average Amount of all orders
+db.Orders.aggregate([
+    { $group: { _id: null, averageAmount: { $avg: "$Amount" } } }
+]);
+
+// Calculate average age of employees (requires age calculation based on DateOfBirth)
+db.Employees.aggregate([
+    {
+        $group: {
+            _id: null,
+            averageAge: { $avg: { $subtract: [new Date(), "$DateOfBirth"] } }
+        }
+    }
+]);
+{
+  _id: null,
+  averageAge: 1255165448898
+}
+// Count the number of employees in each Department
+db.Employees.aggregate([
+    { $group: { _id: "$Department", EmployeeCount: { $sum: 1 } } }
+]);
+
+// Calculate the total Amount of orders for each CustomerID
+db.Orders.aggregate([
+    { $group: { _id: "$CustomerID", TotalAmount: { $sum: "$Amount" } } }
+]);
+{
+  _id: 'C003',
+  TotalAmount: 300.5
+}
+{
+  _id: 'C002',
+  TotalAmount: 1265
+}
+{
+  _id: 103,
+  TotalAmount: 500
+}
+{
+  _id: 102,
+  TotalAmount: 500
+}
+{
+  _id: 101,
+  TotalAmount: 150
+}
+{
+  _id: 'C004',
+  TotalAmount: 450.25
+}
+{
+  _id: 'C001',
+  TotalAmount: 1350.75
+}
+// Find departments with more than 5 employees
+db.Employees.aggregate([
+    { $group: { _id: "$Department", EmployeeCount: { $sum: 1 } } },
+    { $match: { EmployeeCount: { $gt: 5 } } }
+]);
+
+// Find CustomerIDs with total order Amount greater than 1000
+db.Orders.aggregate([
+    { $group: { _id: "$CustomerID", TotalAmount: { $sum: "$Amount" } } },
+    { $match: { TotalAmount: { $gt: 1000 } } }
+]);
+{
+  _id: 'C002',
+  TotalAmount: 1265
+}
+{
+  _id: 'C001',
+  TotalAmount: 1350.75
+}
+db.Employees.aggregate([
+    {
+        $lookup: {
+            from: "Orders",
+            localField: "EmployeeID",
+            foreignField: "CustomerID",
+            as: "orders"
+        }
+    },
+    { $unwind: "$orders" },  // Optional if you want to flatten the results
+    {
+        $project: {
+            FirstName: 1,
+            LastName: 1,
+            "orders.Amount": 1
+        }
+    }
+]);
+db.Employees.aggregate([
+    {
+        $lookup: {
+            from: "Orders",
+            localField: "EmployeeID",
+            foreignField: "CustomerID",
+            as: "orders"
+        }
+    },
+    {
+        $project: {
+            FirstName: 1,
+            LastName: 1,
+            "orders.Amount": 1
+        }
+    }
+]);
+{
+  _id: ObjectId('6728f9d312bd9148457cbf30'),
+  FirstName: 'thara',
+  LastName: 'ammulu',
+  orders: []
+}
+{
+  _id: ObjectId('6728fa2612bd9148457cbf33'),
+  FirstName: 'Alice',
+  LastName: 'Johnson',
+  orders: []
+}
+{
+  _id: ObjectId('6728fe19a10e4fafe03177a7'),
+  FirstName: 'Alice',
+  LastName: 'Johnson',
+  orders: []
+}
+db.Employees.aggregate([
+    {
+        $lookup: {
+            from: "Orders",
+            localField: "EmployeeID",
+            foreignField: "CustomerID",
+            as: "orders"
+        }
+    },
+    {
+        $project: {
+            FirstName: 1,
+            LastName: 1,
+            "orders.Amount": 1
+        }
+    }
+]);
+{
+  _id: ObjectId('6728f9d312bd9148457cbf30'),
+  FirstName: 'thara',
+  LastName: 'ammulu',
+  orders: []
+}
+{
+  _id: ObjectId('6728fa2612bd9148457cbf33'),
+  FirstName: 'Alice',
+  LastName: 'Johnson',
+  orders: []
+}

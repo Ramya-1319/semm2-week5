@@ -1,0 +1,279 @@
+use fsdb2
+switched to db fsdb2
+db.createCollection("Products");
+db.createCollection("Categories");
+db.createCollection("Orders");
+db.createCollection("Customers");
+db.createCollection("Reviews");
+{ ok: 1 }
+db.Products.insertMany([
+    { ProductID: 1, Name: 'Laptop', Category: 'Electronics', Price: 999.99, Stock: 50 },
+    { ProductID: 2, Name: 'Smartphone', Category: 'Electronics', Price: 599.99, Stock: 100 },
+    { ProductID: 3, Name: 'Headphones', Category: 'Accessories', Price: 199.99, Stock: 200 },
+    { ProductID: 4, Name: 'Coffee Maker', Category: 'Home Appliances', Price: 79.99, Stock: 30 },
+    { ProductID: 5, Name: 'Desk Chair', Category: 'Furniture', Price: 129.99, Stock: 20 }
+]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('67290078544c3f8f192428fe'),
+    '1': ObjectId('67290078544c3f8f192428ff'),
+    '2': ObjectId('67290078544c3f8f19242900'),
+    '3': ObjectId('67290078544c3f8f19242901'),
+    '4': ObjectId('67290078544c3f8f19242902')
+  }
+}
+// Replace 'Electronics' with the desired category
+db.Products.find({ Category: 'Electronics' }).pretty();
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa41'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 49
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa42'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('67290078544c3f8f192428fe'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 50
+}
+{
+  _id: ObjectId('67290078544c3f8f192428ff'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+// Replace ProductID with the product being ordered
+db.Products.updateOne(
+    { ProductID: 1 },  // Example for the Laptop
+    { $inc: { Stock: -1 } }
+);
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// Replace 'ProductID' with the ID of the product to delete
+db.Products.deleteOne({ ProductID: 5 }); // Example: Deleting Desk Chair
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+// Example: Products priced between $100 and $600 that are in stock
+db.Products.find({
+    Price: { $gte: 100, $lte: 600 },
+    Stock: { $gt: 0 }
+}).pretty();
+MongoServerSelectionError: getaddrinfo ENOTFOUND cluster0-shard-00-01.kr7w3.mongodb.net
+// Example: Products priced between $100 and $600 that are in stock
+db.Products.find({
+    Price: { $gte: 100, $lte: 600 },
+    Stock: { $gt: 0 }
+}).pretty();
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa42'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa43'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+{
+  _id: ObjectId('67290078544c3f8f192428ff'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('67290078544c3f8f19242900'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+// Products priced under $500 and with a rating above 4
+db.Products.find({
+    $and: [
+        { Price: { $lt: 500 } },
+        { Rating: { $gt: 4 } }
+    ]
+}).pretty();
+
+// Products priced above $100 or with a rating above 4
+db.Products.find({
+    $or: [
+        { Price: { $gt: 100 } },
+        { Rating: { $gt: 4 } }
+    ]
+}).pretty();
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa41'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 48
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa42'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa43'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+{
+  _id: ObjectId('67290078544c3f8f192428fe'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 50
+}
+{
+  _id: ObjectId('67290078544c3f8f192428ff'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('67290078544c3f8f19242900'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+db.Products.find().sort({ Price: 1 }).pretty();
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa44'),
+  ProductID: 4,
+  Name: 'Coffee Maker',
+  Category: 'Home Appliances',
+  Price: 79.99,
+  Stock: 30
+}
+{
+  _id: ObjectId('67290078544c3f8f19242901'),
+  ProductID: 4,
+  Name: 'Coffee Maker',
+  Category: 'Home Appliances',
+  Price: 79.99,
+  Stock: 30
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa43'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+{
+  _id: ObjectId('67290078544c3f8f19242900'),
+  ProductID: 3,
+  Name: 'Headphones',
+  Category: 'Accessories',
+  Price: 199.99,
+  Stock: 200
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa42'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('67290078544c3f8f192428ff'),
+  ProductID: 2,
+  Name: 'Smartphone',
+  Category: 'Electronics',
+  Price: 599.99,
+  Stock: 100
+}
+{
+  _id: ObjectId('6728ffdbadb5dee76a11fa41'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 48
+}
+{
+  _id: ObjectId('67290078544c3f8f192428fe'),
+  ProductID: 1,
+  Name: 'Laptop',
+  Category: 'Electronics',
+  Price: 999.99,
+  Stock: 50
+}
+db.Products.aggregate([
+    {
+        $group: {
+            _id: null,
+            averagePrice: { $avg: "$Price" }
+        }
+    }
+]);
+{
+  _id: null,
+  averagePrice: 469.99
+}
+db.Orders.aggregate([
+    {
+        $lookup: {
+            from: "Products",
+            localField: "ProductID",
+            foreignField: "ProductID",
+            as: "productDetails"
+        }
+    },
+    {
+        $unwind: "$productDetails"
+    },
+    {
+        $group: {
+            _id: "$productDetails.Category",
+            totalRevenue: { $sum: { $multiply: ["$productDetails.Price", "$Quantity"] } } // Assuming Quantity is a field in Orders
+        }
+    }
+]);
